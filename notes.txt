@@ -1,0 +1,1 @@
+Api guide link: https://dev.twitch.tv/docs/api/get-started/
