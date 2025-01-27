@@ -1,0 +1,1 @@
+Updates periodically from a set list of streamers, picking one randomly in order to cycle them.
