@@ -1,7 +1,8 @@
 #!/usr/bin/env /Users/nathanielpierson/.rbenv/shims/ruby
 require 'http'
 # array of streamers to randomly cycle through
-streamer_list = ["abney317", "Kally", "Simply", "Dowsky", "cheese", "greensuigi", "Liam", "karinpune", "MarineMammalRescue", "Zfg1"]
+streamer_list = ["abney317", "Kally", "MarineMammalRescue", "Zfg1", "Simply", "Dowsky", "cheese", "greensuigi", "Liam", "karinpune"]
+
 # this line makes it so you don't have to change values in the rng when you add or remove from array.
 streamer_number = streamer_list.length
 streamer = streamer_list[rand(0...streamer_number)].to_s
@@ -52,7 +53,15 @@ if streamer_live == true
 
   # shows minutes streamed if live for under an hour
   if hours_streamed < 1 && days_streamed == 0
-    puts "#{streamer}: live for #{minutes_streamed} minutes"
+    if streamer.length > 9
+      shortened_streamer = streamer.split("")
+      while shortened_streamer.length > 9
+        shortened_streamer.pop
+      end
+      puts "#{shortened_streamer.join()}: live for #{minutes_streamed} minutes"
+    else
+      puts "#{streamer}: live for #{minutes_streamed} minutes"
+    end
   elsif
     # shows both minutes and hours once stream has been live for an hour
     days_streamed == 0 
@@ -64,7 +73,7 @@ if streamer_live == true
       while shortened_streamer.length > 6
         shortened_streamer.pop
       end
-      puts "#{shortened_streamer.join()}: live for #{days_streamed}d, #{hours_streamed}h and #{minutes_streamed}m"
+      puts "#{shortened_streamer.join()}: live for #{days_streamed}d, #{hours_streamed}h, #{minutes_streamed}m"
     else
       puts "#{streamer}: live for #{days_streamed}d, #{hours_streamed}h and #{minutes_streamed}m"
     end
