@@ -1,1 +1,1 @@
-Updates periodically from a set list of streamers, picking one randomly in order to cycle them.
+Xbar plugin to show if specific streamers are currently live on Twitch using Twitch API. Says they're not live if they're not, and tells their time streamed if they are. It updates periodically from a set list of streamers, picking one randomly in order to cycle through them. Shows game streamed when you click on the message. Currently supports streams that are longer than a day, but may have issues at the end of months (more testing is needed).

@@ -2,7 +2,9 @@
 require 'http'
 # array of streamers to randomly cycle through
 streamer_list = ["abney317", "Kally", "Simply", "Dowsky", "cheese", "greensuigi", "Liam", "karinpune", "MarineMammalRescue", "Zfg1"]
-streamer = streamer_list[rand(0...6)].to_s
+# this line makes it so you don't have to change values in the rng when you add or remove from array.
+streamer_number = streamer_list.length
+streamer = streamer_list[rand(0...streamer_number)].to_s
 # gets data from Twitch API
 request = HTTP.headers(:client_id => "pnyd2wx6lmfrsubv7jd2rmakek0g7h").auth("Bearer v3y6hy744layrep52r2hlhdj7nmgv7").get("https://api.twitch.tv/helix/search/channels?query=#{streamer}&live_only=false")
 get_info = request.parse
