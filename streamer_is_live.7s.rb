@@ -1,11 +1,16 @@
 #!/usr/bin/env /Users/nathanielpierson/.rbenv/shims/ruby
 require 'http'
 # array of streamers to randomly cycle through
+
 streamer_list = ["abney317", "Kally", "MarineMammalRescue", "Zfg1", "Simply", "Dowsky", "cheese", "greensuigi", "Liam", "karinpune"]
 
 # this line makes it so you don't have to change values in the rng when you add or remove from array.
+
 streamer_number = streamer_list.length
 streamer = streamer_list[rand(0...streamer_number)].to_s
+
+# streamer = "abney317"
+
 # gets data from Twitch API
 request = HTTP.headers(:client_id => "pnyd2wx6lmfrsubv7jd2rmakek0g7h").auth("Bearer v3y6hy744layrep52r2hlhdj7nmgv7").get("https://api.twitch.tv/helix/search/channels?query=#{streamer}&live_only=false")
 get_info = request.parse
@@ -39,23 +44,41 @@ if streamer_live == true
   # class does not transfer to UTC, so this helps the conversion be correct. Currently only correct for EST.
   if current_hour >= 24
     current_hour -= 24
+    if current_day == 31
+      current_day = 0
+    else
+      current_day += 1
+    end
   end
   current_minute = d.strftime("%M").to_i
   total_minutes_current = (current_hour * 60) + current_minute
+
+  # data to help program see if month has changed between stream start and now
+  month_array = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  days_in_month = month_array["#{time[5]}#{time[6]}".to_i]
+
   day = "#{time[8]}#{time[9]}".to_i
   hour = "#{time[11]}#{time[12]}".to_i
   minute = "#{time[14]}#{time[15]}".to_i
-  total_minutes_streamer = (hour * 60) + minute
-  minutes_streamed = total_minutes_current - total_minutes_streamer
+  total_minutes_streamed = (hour * 60) + minute
+  minutes_streamed = total_minutes_current - total_minutes_streamed
   hours_streamed = minutes_streamed / 60
   minutes_streamed = minutes_streamed % 60
-  days_streamed = current_day - day
-
+  if current_day < day
+    days_streamed = (current_day + days_in_month) - day
+  else
+    days_streamed = day - current_day
+  end
+  # fixes issue with negative hours being displayed for streams live over a day
+  if hours_streamed < 0
+    days_streamed = days_streamed - 1
+    hours_streamed = hours_streamed + 24
+  end
   # shows minutes streamed if live for under an hour
   if hours_streamed < 1 && days_streamed == 0
-    if streamer.length > 9
+    if streamer.length > 11
       shortened_streamer = streamer.split("")
-      while shortened_streamer.length > 9
+      while shortened_streamer.length > 11
         shortened_streamer.pop
       end
       puts "#{shortened_streamer.join()}: live for #{minutes_streamed} minutes"
@@ -64,8 +87,16 @@ if streamer_live == true
     end
   elsif
     # shows both minutes and hours once stream has been live for an hour
-    days_streamed == 0 
-    puts "#{streamer}: live for #{hours_streamed}h and #{minutes_streamed}m"
+    days_streamed == 0
+    if streamer.length > 3
+      shortened_streamer = streamer.split("")
+      while shortened_streamer.length > 3
+        shortened_streamer.pop
+      end
+      puts "#{shortened_streamer.join()}: live for #{hours_streamed}h and #{minutes_streamed} minutes"
+    else
+      puts "#{streamer}: live for #{hours_streamed}h, #{minutes_streamed} minutes"
+    end
   else
     # for streams live longer than an hour, shortens streamer name to fit in Xbar if it's longer than 6 characters and includes days
     if streamer.length > 6
@@ -83,3 +114,7 @@ if streamer_live == true
 else
   puts "#{streamer} is not live."
 end
+
+p day
+p current_day
+p days_streamed
