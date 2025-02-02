@@ -6,10 +6,10 @@ streamer_list = ["abney317", "Kally", "MarineMammalRescue", "Zfg1", "Simply", "D
 
 # this line makes it so you don't have to change values in the rng when you add or remove from array.
 
-streamer_number = streamer_list.length
-streamer = streamer_list[rand(0...streamer_number)].to_s
+# streamer_number = streamer_list.length
+# streamer = streamer_list[rand(0...streamer_number)].to_s
 
-# streamer = "abney317"
+streamer = "abney317"
 
 # gets data from Twitch API
 request = HTTP.headers(:client_id => "pnyd2wx6lmfrsubv7jd2rmakek0g7h").auth("Bearer v3y6hy744layrep52r2hlhdj7nmgv7").get("https://api.twitch.tv/helix/search/channels?query=#{streamer}&live_only=false")
@@ -44,11 +44,7 @@ if streamer_live == true
   # class does not transfer to UTC, so this helps the conversion be correct. Currently only correct for EST.
   if current_hour >= 24
     current_hour -= 24
-    if current_day == 31
-      current_day = 0
-    else
-      current_day += 1
-    end
+    current_day += 1
   end
   current_minute = d.strftime("%M").to_i
   total_minutes_current = (current_hour * 60) + current_minute
@@ -64,10 +60,11 @@ if streamer_live == true
   minutes_streamed = total_minutes_current - total_minutes_streamed
   hours_streamed = minutes_streamed / 60
   minutes_streamed = minutes_streamed % 60
+  days_streamed = 0
   if current_day < day
     days_streamed = (current_day + days_in_month) - day
   else
-    days_streamed = day - current_day
+    days_streamed = current_day - day
   end
   # fixes issue with negative hours being displayed for streams live over a day
   if hours_streamed < 0
@@ -76,6 +73,7 @@ if streamer_live == true
   end
   # shows minutes streamed if live for under an hour
   if hours_streamed < 1 && days_streamed == 0
+    # each condition has a limit for how long the names can display as so that they fit in Xbar
     if streamer.length > 11
       shortened_streamer = streamer.split("")
       while shortened_streamer.length > 11
@@ -88,17 +86,16 @@ if streamer_live == true
   elsif
     # shows both minutes and hours once stream has been live for an hour
     days_streamed == 0
-    if streamer.length > 3
+    if streamer.length > 8
       shortened_streamer = streamer.split("")
-      while shortened_streamer.length > 3
+      while shortened_streamer.length > 8
         shortened_streamer.pop
       end
       puts "#{shortened_streamer.join()}: live for #{hours_streamed}h and #{minutes_streamed} minutes"
     else
-      puts "#{streamer}: live for #{hours_streamed}h, #{minutes_streamed} minutes"
+      puts "#{streamer}: live for #{hours_streamed}h and #{minutes_streamed}m"
     end
   else
-    # for streams live longer than an hour, shortens streamer name to fit in Xbar if it's longer than 6 characters and includes days
     if streamer.length > 6
       shortened_streamer = streamer.split("")
       while shortened_streamer.length > 6
@@ -114,7 +111,3 @@ if streamer_live == true
 else
   puts "#{streamer} is not live."
 end
-
-p day
-p current_day
-p days_streamed
