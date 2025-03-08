@@ -2,14 +2,14 @@
 require 'http'
 # array of streamers to randomly cycle through
 
-streamer_list = ["abney317", "Kally", "MarineMammalRescue", "Zfg1", "Simply", "Dowsky", "cheese", "greensuigi", "Liam", "karinpune"]
+streamer_list = ["abney317", "Kally", "MarineMammalRescue", "Zfg1", "Simply", "Dowsky", "cheese", "greensuigi", "Liam", "karinpune", "ikori_mario"]
 
 # this line makes it so you don't have to change values in the rng when you add or remove from array.
 
-# streamer_number = streamer_list.length
-# streamer = streamer_list[rand(0...streamer_number)].to_s
+streamer_number = streamer_list.length
+streamer = streamer_list[rand(0...streamer_number)].to_s
 
-streamer = "abney317"
+# streamer = "MarineMammalRescue"
 
 # gets data from Twitch API
 request = HTTP.headers(:client_id => "pnyd2wx6lmfrsubv7jd2rmakek0g7h").auth("Bearer v3y6hy744layrep52r2hlhdj7nmgv7").get("https://api.twitch.tv/helix/search/channels?query=#{streamer}&live_only=false")
@@ -37,10 +37,20 @@ while real_streamer == false
 end
 
 d = DateTime.now
-current_day = (d.strftime("%D")[3] + d.strftime("%D")[4]).to_i
 if streamer_live == true
+  current_day = (d.strftime("%D")[3] + d.strftime("%D")[4]).to_i
+  current_zone = d.strftime("%:z")
+  diff = 0
+  24.times do |check|
+    if current_zone == "-0#{check}:00"
+      diff = check
+    end
+    if current_zone == "+0#{check}:00"
+      diff = -check
+    end
+  end
   # code for calculating how long streamer has been live based on started_at parameter.
-  current_hour = d.strftime("%H").to_i + 5
+  current_hour = d.strftime("%H").to_i + diff
   # class does not transfer to UTC, so this helps the conversion be correct. Currently only correct for EST.
   if current_hour >= 24
     current_hour -= 24
