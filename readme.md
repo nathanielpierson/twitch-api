@@ -16,7 +16,7 @@ This is an [Xbar](https://xbarapp.com) plugin that displays the live status of s
 
    ```bash
    cp streamer_is_live.7s.rb ~/Library/Application\ Support/xbar/plugins
-Open Xbar (or download it here if you haven't already).
+Open Xbar (or [download it here](https://xbarapp.com) if you haven't already).
 In the Xbar menu, click Refresh All to start the plugin.
 Notes
 Make sure you have enough free space in your macOS menu bar. If the menu bar is too full, Xbar plugins may not display correctly or at all.
