@@ -2,7 +2,7 @@
 require 'http'
 # array of streamers to randomly cycle through
 
-streamer_list = ["abney317", "Kally", "MarineMammalRescue", "Zfg1", "Simply", "Dowsky", "cheese", "greensuigi", "Liam", "karinpune", "ikori_mario"]
+streamer_list = ["abney317", "TriforceTK", "MarineMammalRescue", "Zfg1", "Simply", "salvner", "cheese", "greensuigi", "Liam", "karinpune", "marlene_3521"]
 
 # this line makes it so you don't have to change values in the rng when you add or remove from array.
 
@@ -12,7 +12,12 @@ streamer = streamer_list[rand(0...streamer_number)].to_s
 # streamer = "MarineMammalRescue"
 
 # gets data from Twitch API
-request = HTTP.headers(:client_id => "pnyd2wx6lmfrsubv7jd2rmakek0g7h").auth("Bearer v3y6hy744layrep52r2hlhdj7nmgv7").get("https://api.twitch.tv/helix/search/channels?query=#{streamer}&live_only=false")
+client_id = ENV["TWITCH_CLIENT_ID"]
+access_token = ENV["TWITCH_ACCESS_TOKEN"]
+
+request = HTTP.headers(:client_id => client_id).auth("Bearer #{access_token}").get("https://api.twitch.tv/helix/search/channels?query=#{streamer}&live_only=false")
+
+
 get_info = request.parse
 streamer_live = false
 real_streamer = false
@@ -36,8 +41,8 @@ while real_streamer == false
   end
 end
 
-d = DateTime.now
 if streamer_live == true
+  d = DateTime.now
   current_day = (d.strftime("%D")[3] + d.strftime("%D")[4]).to_i
   current_zone = d.strftime("%:z")
   diff = 0
